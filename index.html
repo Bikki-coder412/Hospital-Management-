@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare | Hospital Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 style="text-align: center;">For Review Use The Given Gmail And Password for Admin Login</h1>
+
+    <!-- LOGIN / REGISTER SCREEN -->
+    <section id="authScreen" class="auth-screen">
+        <div class="auth-brand">
+            <div class="brand-icon">✚</div>
+            <h1>MediCare</h1>
+            <p>Hospital Management System</p>
+        </div>
+
+        <div class="auth-card">
+            <div id="roleSelection">
+                <h2>Welcome to MediCare</h2>
+                <p class="auth-subtitle">Choose your account type to continue.</p>
+
+                <div class="role-options">
+                    <button class="role-option" data-role="patient">
+                        <span>👤</span>
+                        <strong>Patient</strong>
+                        <small>Book and manage appointments</small>
+                    </button>
+                    <button class="role-option" data-role="doctor">
+                        <span>🩺</span>
+                        <strong>Doctor</strong>
+                        <small>Manage your appointments</small>
+                    </button>
+                    <button class="role-option" data-role="admin">
+                        <span>⚙️</span>
+                        <strong>Admin</strong>
+                        <small>Manage hospital records</small>
+                    </button>
+                </div>
+
+                <div class="demo-credentials">
+                    <strong> Admin Login</strong>
+                    <p>Email: admin@medicare.demo</p>
+                    <p>Password: Admin123</p>
+                    <small>Doctor accounts are listed in the project instructions.</small>
+                </div>
+            </div>
+
+            <div id="loginPanel" class="hidden">
+                <button class="back-btn" id="backToRoles">← Back</button>
+                <h2 id="loginHeading">Login</h2>
+                <p class="auth-subtitle" id="loginDescription">Enter your account details.</p>
+
+                <form id="loginForm">
+                    <label for="loginEmail">Email address</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter your email">
+
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter your password">
+
+                    <button type="submit" class="primary-btn full-btn">Login</button>
+                </form>
+
+                <p id="registerPrompt" class="auth-switch hidden">
+                    Don't have an account?
+                    <button type="button" id="showRegister">Register here</button>
+                </p>
+            </div>
+
+            <div id="registerPanel" class="hidden">
+                <button class="back-btn" id="backToLogin">← Back to Login</button>
+                <h2>Patient Registration</h2>
+                <p class="auth-subtitle">Create your patient account.</p>
+
+                <form id="registerForm">
+                    <label for="registerName">Full name</label>
+                    <input type="text" id="registerName" required placeholder="Enter your full name">
+
+                    <div class="form-grid">
+                        <div>
+                            <label for="registerAge">Age</label>
+                            <input type="number" id="registerAge" min="1" max="120" required>
+                        </div>
+                        <div>
+                            <label for="registerGender">Gender</label>
+                            <select id="registerGender" required>
+                                <option value="">Select gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label for="registerPhone">Phone number</label>
+                    <input type="tel" id="registerPhone" maxlength="10" required placeholder="10-digit phone number">
+
+                    <label for="registerEmail">Email address</label>
+                    <input type="email" id="registerEmail" required placeholder="Enter your email">
+
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" minlength="6" required placeholder="At least 6 characters">
+
+                    <button type="submit" class="primary-btn full-btn">Create Account</button>
+                </form>
+            </div>
+
+            <p id="authMessage" class="auth-message" aria-live="polite"></p>
+        </div>
+    </section>
+
+    <!-- MAIN APPLICATION -->
+    <div id="appScreen" class="app-screen hidden">
+
+        <aside class="sidebar">
+            <div class="brand">
+                <span>✚</span>
+                <h2>MediCare</h2>
+            </div>
+
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <strong id="sidebarUserName">User</strong>
+                    <small id="sidebarUserRole">Account</small>
+                </div>
+            </div>
+
+            <p class="side-label">MAIN MENU</p>
+            <nav id="sidebarNav"></nav>
+
+            <div class="sidebar-bottom">
+                <button id="logoutBtn" class="logout-btn">↪ Logout</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h2 id="pageTitle">Dashboard Overview</h2>
+                    <p>Welcome to your MediCare workspace.</p>
+                </div>
+                <span class="admin-badge" id="roleBadge">ADMIN</span>
+            </header>
+
+            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+            <!-- ADMIN DASHBOARD -->
+            <section id="dashboard" class="page hidden">
+                <div class="welcome">
+                    <div>
+                        <h2>Welcome to MediCare</h2>
+                        <p>Manage your hospital activities from one place.</p>
+                    </div>
+                    <span class="welcome-icon">✚</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span>Total Patients</span>
+                        <h2 id="totalPatients">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Total Doctors</span>
+                        <h2 id="totalDoctors">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Total Appointments</span>
+                        <h2 id="totalAppointments">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Completed Appointments</span>
+                        <h2 id="completedAppointments">0</h2>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Recent Appointments</h3>
+                            <p>Latest hospital appointment records</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentAppointments"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN PATIENT MANAGEMENT -->
+            <section id="patients" class="page hidden">
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Add New Patient</h3>
+                            <p>Register a patient in the hospital system.</p>
+                        </div>
+                    </div>
+
+                    <form id="patientForm" class="form-grid">
+                        <div>
+                            <label for="patientName">Patient Name</label>
+                            <input id="patientName" type="text" required>
+                        </div>
+                        <div>
+                            <label for="patientAge">Age</label>
+                            <input id="patientAge" type="number" min="1" max="120" required>
+                        </div>
+                        <div>
+                            <label for="patientGender">Gender</label>
+                            <select id="patientGender" required>
+                                <option value="">Select gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="patientPhone">Phone</label>
+                            <input id="patientPhone" type="tel" maxlength="10" required>
+                        </div>
+                        <div class="form-submit">
+                            <button class="primary-btn" type="submit">Add Patient</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Patient Records</h3>
+                            <p id="patientSubtitle">Registered patients</p>
+                        </div>
+                        <input id="searchPatient" class="search-input" placeholder="Search patients...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Phone</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN DOCTOR MANAGEMENT -->
+            <section id="doctors" class="page hidden">
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Add New Doctor</h3>
+                            <p>Add a doctor and create their login account.</p>
+                        </div>
+                    </div>
+
+                    <form id="doctorForm" class="form-grid">
+                        <div>
+                            <label for="doctorName">Doctor Name</label>
+                            <input id="doctorName" type="text" required>
+                        </div>
+                        <div>
+                            <label for="doctorSpecialty">Specialization</label>
+                            <select id="doctorSpecialty" required>
+                                <option value="">Select specialization</option>
+                                <option>Cardiology</option>
+                                <option>Dermatology</option>
+                                <option>Neurology</option>
+                                <option>Pediatrics</option>
+                                <option>Orthopedics</option>
+                                <option>General Medicine</option>
+                                <option>ENT</option>
+                                <option>Ophthalmology</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="doctorPhone">Phone</label>
+                            <input id="doctorPhone" type="tel" maxlength="10" required>
+                        </div>
+                        <div>
+                            <label for="doctorEmail">Login Email</label>
+                            <input id="doctorEmail" type="email" required>
+                        </div>
+                        <div>
+                            <label for="doctorPassword">Login Password</label>
+                            <input id="doctorPassword" type="password" minlength="6" required>
+                        </div>
+                        <div class="form-submit">
+                            <button class="primary-btn" type="submit">Add Doctor</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Doctor Records</h3>
+                            <p>Registered doctors</p>
+                        </div>
+                        <input id="searchDoctor" class="search-input" placeholder="Search doctors...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Specialization</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doctorTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN APPOINTMENT MANAGEMENT -->
+            <section id="appointments" class="page hidden">
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Book Appointment</h3>
+                            <p>Create an appointment for a patient.</p>
+                        </div>
+                    </div>
+
+                    <form id="appointmentForm" class="form-grid">
+                        <div>
+                            <label for="appointmentPatient">Patient</label>
+                            <select id="appointmentPatient" required>
+                                <option value="">Select patient</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="appointmentDoctor">Doctor</label>
+                            <select id="appointmentDoctor" required>
+                                <option value="">Select doctor</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="appointmentDate">Date</label>
+                            <input id="appointmentDate" type="date" required>
+                        </div>
+                        <div>
+                            <label for="appointmentTime">Time</label>
+                            <input id="appointmentTime" type="time" required>
+                        </div>
+                        <div class="form-submit">
+                            <button class="primary-btn" type="submit">Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>All Appointments</h3>
+                            <p>Manage all hospital bookings.</p>
+                        </div>
+                        <input id="searchAppointment" class="search-input" placeholder="Search appointments...">
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appointmentTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PATIENT DASHBOARD -->
+            <section id="patientDashboard" class="page hidden">
+                <div class="welcome">
+                    <div>
+                        <h2 id="patientWelcome">Welcome!</h2>
+                        <p>Manage your appointments and find available doctors.</p>
+                    </div>
+                    <span class="welcome-icon">👤</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span>My Appointments</span>
+                        <h2 id="myPatientAppointments">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Upcoming</span>
+                        <h2 id="myUpcomingAppointments">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Completed</span>
+                        <h2 id="myCompletedAppointments">0</h2>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Book an Appointment</h3>
+                            <p>Choose a doctor and your preferred date.</p>
+                        </div>
+                    </div>
+                    <form id="patientBookingForm" class="form-grid">
+                        <div>
+                            <label for="patientBookingDoctor">Choose Doctor</label>
+                            <select id="patientBookingDoctor" required></select>
+                        </div>
+                        <div>
+                            <label for="patientBookingDate">Date</label>
+                            <input id="patientBookingDate" type="date" required>
+                        </div>
+                        <div>
+                            <label for="patientBookingTime">Time</label>
+                            <input id="patientBookingTime" type="time" required>
+                        </div>
+                        <div class="form-submit">
+                            <button class="primary-btn" type="submit">Book Appointment</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>My Appointments</h3>
+                            <p>Your personal appointment history.</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientAppointmentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>Available Doctors</h3>
+                            <p>Explore doctors at MediCare.</p>
+                        </div>
+                    </div>
+                    <div id="patientDoctorList" class="doctor-list"></div>
+                </div>
+            </section>
+
+            <!-- DOCTOR DASHBOARD -->
+            <section id="doctorDashboard" class="page hidden">
+                <div class="welcome">
+                    <div>
+                        <h2 id="doctorWelcome">Welcome, Doctor</h2>
+                        <p id="doctorSpecialtyText">Your appointment workspace.</p>
+                    </div>
+                    <span class="welcome-icon">🩺</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span>Total Appointments</span>
+                        <h2 id="doctorTotalAppointments">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Scheduled</span>
+                        <h2 id="doctorScheduledAppointments">0</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span>Completed</span>
+                        <h2 id="doctorCompletedAppointments">0</h2>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="section-heading">
+                        <div>
+                            <h3>My Appointments</h3>
+                            <p>Only appointments assigned to your account are shown.</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Update Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="doctorAppointmentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">© 2026 MediCare Hospital Management System</footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
